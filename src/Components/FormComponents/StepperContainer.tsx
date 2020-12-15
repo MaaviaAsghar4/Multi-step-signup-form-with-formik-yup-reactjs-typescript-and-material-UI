@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function getSteps() {
-  return ["User Info", "Contact Info", "Bank Account Info"];
+  return ["User Info", "Contact Info", "Bank Details"];
 }
 
 function getStepContent(
