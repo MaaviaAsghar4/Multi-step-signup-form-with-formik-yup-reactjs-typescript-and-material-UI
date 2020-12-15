@@ -18,8 +18,10 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      height: "50vh",
       width: "100vw",
+    },
+    center: {
+      textAlign: "center",
     },
   })
 );
@@ -32,7 +34,14 @@ function getStepContent(
   activeStep: number,
   handleNext: () => void,
   handleBack: () => void,
-  steps: string[]
+  steps: string[],
+  handleBankState: (bank: string, type: string, accNumber: number) => void,
+  handleUserState: (
+    firstname: string,
+    lastname: string,
+    emailadd: string
+  ) => void,
+  handleContactState: (phonenumber: number, add: string, zip: number) => void
 ) {
   switch (activeStep) {
     case 0:
@@ -42,6 +51,7 @@ function getStepContent(
           handleBack={handleBack}
           activeStep={activeStep}
           steps={steps}
+          handleUserState={handleUserState}
         />
       );
     case 1:
@@ -51,6 +61,7 @@ function getStepContent(
           handleBack={handleBack}
           activeStep={activeStep}
           steps={steps}
+          handleContactState={handleContactState}
         />
       );
     case 2:
@@ -60,6 +71,7 @@ function getStepContent(
           handleBack={handleBack}
           activeStep={activeStep}
           steps={steps}
+          handleBankState={handleBankState}
         />
       );
     default:
@@ -71,6 +83,15 @@ const StepperContainer = () => {
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const steps = getSteps();
+  let [firstName, setFirstName] = React.useState("");
+  let [lastName, setLastName] = React.useState("");
+  let [email, setEmail] = React.useState("");
+  let [phoneNumber, setPhoneNumber] = React.useState(0);
+  let [address, setAddress] = React.useState("");
+  let [zipCode, setZipCode] = React.useState(0);
+  let [bankName, setBankName] = React.useState("");
+  let [accountType, setAccountType] = React.useState("");
+  let [accountNumber, setAccountNumber] = React.useState(0);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -82,6 +103,32 @@ const StepperContainer = () => {
 
   const handleReset = () => {
     setActiveStep(0);
+  };
+
+  const handleUserState = (
+    firstname: string,
+    lastname: string,
+    emailadd: string
+  ) => {
+    setFirstName(firstname);
+    setLastName(lastname);
+    setEmail(emailadd);
+  };
+
+  const handleBankState = (bank: string, type: string, accNumber: number) => {
+    setBankName(bank);
+    setAccountType(type);
+    setAccountNumber(accNumber);
+  };
+
+  const handleContactState = (
+    phonenumber: number,
+    add: string,
+    zip: number
+  ) => {
+    setPhoneNumber(phonenumber);
+    setAddress(add);
+    setZipCode(zip);
   };
   return (
     <div>
@@ -97,16 +144,54 @@ const StepperContainer = () => {
           {activeStep === steps.length ? (
             <div>
               <Typography className={classes.instructions}>
-                All steps completed
+                <div>
+                  <strong>User Details</strong>
+                  <p>
+                    Name: <strong>{`${firstName} ${lastName}`}</strong>
+                  </p>
+                  <p>
+                    Email: <strong>{`${email}`}</strong>
+                  </p>
+                  <strong>Contact Details</strong>
+                  <p>
+                    Phone Number: <strong>{`${phoneNumber}`}</strong>
+                  </p>
+                  <p>
+                    Address: <strong>{`${address}`}</strong>
+                  </p>
+                  <p>
+                    Zip Code: <strong>{`${zipCode}`}</strong>
+                  </p>
+                  <strong>Bank Details</strong>
+                  <p>
+                    Bank: <strong>{`${bankName}`}</strong>
+                  </p>
+                  <p>
+                    Account Type: <strong>{`${accountType}`}</strong>
+                  </p>
+                  <p>
+                    Account Number: <strong>{`${accountNumber}`}</strong>
+                  </p>
+                </div>
               </Typography>
-              <Button variant="contained" onClick={handleReset}>
-                Reset
-              </Button>
+              <div className={classes.center}>
+                <Button variant="contained" onClick={handleReset}>
+                  Reset
+                </Button>
+              </div>
             </div>
           ) : (
             <div>
               <Typography className={classes.instructions}>
-                {getStepContent(activeStep, handleNext, handleBack, steps)}
+                {getStepContent(
+                  activeStep,
+                  handleNext,
+                  handleBack,
+                  steps,
+                  handleBankState,
+                  handleUserState,
+                  handleContactState
+                )}
               </Typography>
             </div>
           )}

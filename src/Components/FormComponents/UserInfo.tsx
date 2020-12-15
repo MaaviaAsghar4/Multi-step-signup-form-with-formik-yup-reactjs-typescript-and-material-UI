@@ -28,6 +28,7 @@ const UserInfo: React.FC<userProp> = ({
   handleBack,
   activeStep,
   steps,
+  handleUserState,
 }) => {
   const classes = useStyles();
   const formik = useFormik({
@@ -52,7 +53,7 @@ const UserInfo: React.FC<userProp> = ({
         .required("password is required"),
     }),
     onSubmit: (values) => {
-      console.log(values);
+      handleUserState(values.firstname, values.lastname, values.email);
       handleNext();
     },
   });
@@ -65,6 +66,7 @@ const UserInfo: React.FC<userProp> = ({
             label="First Name"
             type="text"
             variant="outlined"
+            name="firstname"
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             value={formik.values.firstname}
@@ -79,6 +81,7 @@ const UserInfo: React.FC<userProp> = ({
             id="lastname"
             label="Last Name"
             type="text"
+            name="lastname"
             variant="outlined"
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
@@ -96,6 +99,7 @@ const UserInfo: React.FC<userProp> = ({
             id="email"
             label="Email"
             type="email"
+            name="email"
             variant="outlined"
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
@@ -114,6 +118,7 @@ const UserInfo: React.FC<userProp> = ({
             id="password"
             label="Password"
             type="password"
+            name="password"
             variant="outlined"
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}

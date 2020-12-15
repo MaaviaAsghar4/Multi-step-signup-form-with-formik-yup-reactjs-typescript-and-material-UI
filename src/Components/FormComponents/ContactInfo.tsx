@@ -1,7 +1,7 @@
 import React from "react";
 import { TextField, Button } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import { userProp } from "../../type";
+import { contactProp } from "../../type";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -23,83 +23,119 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const ContactInfo: React.FC<userProp> = ({
+const ContactInfo: React.FC<contactProp> = ({
   handleNext,
   handleBack,
   activeStep,
   steps,
+  handleContactState,
 }) => {
   const classes = useStyles();
   const formik = useFormik({
     initialValues: {
-      phonenumber: "",
+      cellno: "",
       address: "",
       zipcode: "",
     },
     validationSchema: Yup.object({
-      phonenumber: Yup.number()
-        .max(13, "please write in this format +923xxxxxxxxx")
-        .required("Phone number is required"),
-      lastname: Yup.string()
-        .max(16, "lastName must not exceed 16 characters")
-        .required("Last name is required"),
-      email: Yup.string()
-        .email("Please enter valid email address")
-        .required("email is required"),
-      password: Yup.string()
-        .min(6, "Password must be 6 characters long")
-        .required("password is required"),
+      cellno: Yup.number()
+        .required("Phone number is required")
+        .test(
+          "len",
+          "Please use +92xxxxxxxxxx format",
+          (val: any) => val && val.toString().length === 12
+        )
+        .positive()
+        .integer(),
+      address: Yup.string().required("adress is required"),
+      zipcode: Yup.number()
+        .required("zip code is required")
+        .positive()
+        .integer(),
     }),
     onSubmit: (values) => {
-      console.log(values);
+      handleContactState(
+        parseInt(values.cellno),
+        values.address,
+        parseInt(values.zipcode)
+      );
       handleNext();
     },
   });
   return (
     <div>
-      <div>
-        <TextField
-          id="phoneNumber"
-          label="Number"
-          type="number"
-          variant="outlined"
-          fullWidth
-          className={classes.marginBottom}
-        />
-      </div>
-      <div>
-        <TextField
-          id="address"
-          label="Address"
-          type="text"
-          variant="outlined"
-          fullWidth
-          className={classes.marginBottom}
-        />
-      </div>
-      <div>
-        <TextField
-          id="zipcode"
-          label="ZIP Code"
-          type="number"
-          variant="outlined"
-          fullWidth
-          className={classes.marginBottom}
-        />
-      </div>
-      <div className={classes.center}>
-        <Button
-          disabled={activeStep === 0}
-          onClick={handleBack}
-          className={classes.backButton}
-          variant="contained"
-        >
-          Back
-        </Button>
-        <Button type="submit" variant="contained" color="primary">
-          {activeStep === steps.length - 1 ? "Finish" : "Next"}
-        </Button>
-      </div>
+      <form onSubmit={formik.handleSubmit}>
+        <div>
+          <TextField
+            id="cellno"
+            label="Number"
+            type="number"
+            name="cellno"
+            variant="outlined"
+            fullWidth
+            className={classes.marginBottom}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            value={formik.values.cellno}
+            helperText={
+              formik.touched.cellno && formik.errors.cellno
+                ? formik.errors.cellno
+                : ""
+            }
+          />
+        </div>
+        <div>
+          <TextField
+            id="address"
+            label="Address"
+            type="text"
+            name="address"
+            variant="outlined"
+            fullWidth
+            className={classes.marginBottom}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            value={formik.values.address}
+            helperText={
+              formik.touched.address && formik.errors.address
+                ? formik.errors.address
+                : ""
+            }
+          />
+        </div>
+        <div>
+          <TextField
+            id="zipcode"
+            label="ZIP Code"
+            type="number"
+            name="zipcode"
+            variant="outlined"
+            fullWidth
+            className={classes.marginBottom}
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            value={formik.values.zipcode}
+            helperText={
+              formik.touched.zipcode && formik.errors.zipcode
+                ? formik.errors.zipcode
+                : ""
+            }
+          />
+        </div>
+        <div className={classes.center}>
+          <Button
+            disabled={activeStep === 0}
+            onClick={handleBack}
+            className={classes.backButton}
+            variant="contained"
+          >
+            Back
+          </Button>
+          <Button type="submit" variant="contained" color="primary">
+            {activeStep === steps.length - 1 ? "Finish" : "Next"}
+          </Button>
+        </div>
+      </form>
     </div>
   );
 };
